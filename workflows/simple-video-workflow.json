@@ -1,0 +1,391 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "content": "### Send Storyline in simple words",
+        "height": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1420,
+        -40
+      ],
+      "id": "sticky-note-1",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1340,
+        20
+      ],
+      "id": "message-trigger",
+      "name": "Message Trigger",
+      "webhookId": "test-webhook-id"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "=deepseek/deepseek-chat-v3-0324:free",
+          "mode": "id"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "You are an AI that creates cinematic prompts. Convert the user's story into a detailed, cinematic scene description suitable for image generation. Keep it under 200 words and make it visually stunning.",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.chatInput }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -1040,
+        20
+      ],
+      "id": "prompt-generator",
+      "name": "Prompt Generator",
+      "credentials": {
+        "openAiApi": {
+          "id": "7kCAnxdPhpbBE1Ot",
+          "name": "DeepSeek V3 0324 (free)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.freepik.com/v1/ai/mystic",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-freepik-api-key",
+              "value": "FPSX916988b898fa6bcd47ebe0ae9b874bd0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.message.content }}"
+            },
+            {
+              "name": "structure_strength",
+              "value": "=50"
+            },
+            {
+              "name": "adherence",
+              "value": "=50"
+            },
+            {
+              "name": "hdr",
+              "value": "=50"
+            },
+            {
+              "name": "resolution",
+              "value": "=2k"
+            },
+            {
+              "name": "aspect_ratio",
+              "value": "=widescreen_16_9"
+            },
+            {
+              "name": "model",
+              "value": "=realism"
+            },
+            {
+              "name": "creative_detailing",
+              "value": "=100"
+            },
+            {
+              "name": "engine",
+              "value": "=Sparkle"
+            },
+            {
+              "name": "fixed_generation",
+              "value": "=false"
+            },
+            {
+              "name": "filter_nsfw",
+              "value": "=true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -640,
+        20
+      ],
+      "id": "freepik-request",
+      "name": "Freepik Image Generation"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -440,
+        20
+      ],
+      "id": "wait-node",
+      "name": "Wait for Generation"
+    },
+    {
+      "parameters": {
+        "url": "=https://api.freepik.com/v1/ai/mystic/{{ $json.data.task_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-freepik-api-key",
+              "value": "FPSX916988b898fa6bcd47ebe0ae9b874bd0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -240,
+        20
+      ],
+      "id": "check-generation",
+      "name": "Check Generation Status"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.data.generated }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "image_generated"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -40,
+        20
+      ],
+      "id": "download-image",
+      "name": "Download Generated Image"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/Users/arafathjazeeb/Downloads/Story Creator/generated_scene.jpg",
+        "dataPropertyName": "image_generated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        160,
+        20
+      ],
+      "id": "save-image",
+      "name": "Save Image to Disk"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5001/generate_audio",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $('Prompt Generator').item.json.message.content }}"
+            },
+            {
+              "name": "language",
+              "value": "=en"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        360,
+        20
+      ],
+      "id": "generate-tts",
+      "name": "Generate TTS Audio"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5002/merge_video_audio",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_path",
+              "value": "=/Users/arafathjazeeb/Downloads/Story Creator/generated_scene.jpg"
+            },
+            {
+              "name": "audio_path",
+              "value": "={{ $('Generate TTS Audio').item.json.audio_path }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        560,
+        20
+      ],
+      "id": "merge-video-audio",
+      "name": "Merge Video and Audio"
+    }
+  ],
+  "connections": {
+    "Message Trigger": {
+      "main": [
+        [
+          {
+            "node": "Prompt Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt Generator": {
+      "main": [
+        [
+          {
+            "node": "Freepik Image Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Freepik Image Generation": {
+      "main": [
+        [
+          {
+            "node": "Wait for Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait for Generation": {
+      "main": [
+        [
+          {
+            "node": "Check Generation Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Generation Status": {
+      "main": [
+        [
+          {
+            "node": "Download Generated Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Generated Image": {
+      "main": [
+        [
+          {
+            "node": "Save Image to Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save Image to Disk": {
+      "main": [
+        [
+          {
+            "node": "Generate TTS Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate TTS Audio": {
+      "main": [
+        [
+          {
+            "node": "Merge Video and Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Video and Audio": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "test-instance-id"
+  }
+} 

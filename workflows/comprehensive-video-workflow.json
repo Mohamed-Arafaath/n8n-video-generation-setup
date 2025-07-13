@@ -1,0 +1,590 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "content": "### Send Storyline in simple words  ",
+        "height": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1420,
+        -40
+      ],
+      "id": "80950f71-cb87-46c2-87df-64bb47f5e2cd",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1340,
+        20
+      ],
+      "id": "5a0cd506-9142-4046-8f95-72464ae44d8c",
+      "name": "Message Trigger",
+      "webhookId": "e1962ded-783a-465a-a0c5-a82e153df5d0"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "=deepseek/deepseek-chat-v3-0324:free",
+          "mode": "id"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Task:\nYou are a highly skilled AI designed to transform a short theme, emotion,\nor story concept into a visually stunning, high-quality anime-style cinematic scene.\n\nThe final output should resemble a 3D, glossy anime movie shot — polished and emotionally immersive.\nUse deep lighting, rich textures, and strong atmospheric presence.\nThink of the visual tone seen in films like Your Name, Weathering With You, Suzume, or Belle.\nThe prompt must be versatile enough to work for both image and video generation platforms without needing modification.\n\nPrompt Format (Output Rules):\nGenerate one cinematic anime-style scene\nUse realistic lighting (e.g. glowing sunlight, city neon, reflections, fog)\nInclude textures like wet pavement, glowing skin, glass, metal, fabric, etc.\nAdd 3D depth (blurred backgrounds, layered clouds, subtle lens focus)\nEnsure strong mood and emotional storytelling\nKeep it under 950 characters\nDo not use JSON – clean text only\n\nUser Input Example:\nAnime story input:\n{{ $json.chatInput }}\nSample Outputs:\n\nInput: A group of kids laughing together at a fall festival\nPrompt:\nThe air buzzes with laughter as a group of kids race through fields of pumpkins and golden hay bales.\nTheir colorful scarves flutter in the autumn breeze, and one waves a bright paper lantern high above their head.\nGlossy apples shine in small hands as leaves swirl around their sneakers. Lanterns glow softly overhead,\ncasting warm light over the joyful chaos, while the fading sun paints everything in a dreamy golden haze.\n\nInput: Two travelers setting off on a sunrise road trip\nPrompt:\nAt the edge of a sleepy village, two travelers board a bright red car with backpacks and maps.\nThe morning sky blushes with soft pink and orange hues, and dew glistens on the road.\nOne checks the map with a grin, while the other throws their jacket into the trunk.\nTheir laughter fills the cool air, and the car's polished surface reflects the golden sunlight as they drive into a misty horizon.\n\nInput: A violinist performing alone in a glowing city square\nPrompt:\nUnderneath a halo of streetlamps, a young violinist stands in a quiet plaza surrounded by glowing signs and falling snow.\nHer breath curls in the winter air as her bow dances across shimmering strings.\nRaindrops from earlier glisten on the pavement like glass, catching the warm glow of neon reflections.\nThe melody echoes softly as passersby pause, their shadows stretching long under the cinematic city lights.\n\nInput: A girl waiting for a train during a summer downpour\nPrompt:\nA girl stands under a glass shelter at a rural train station as summer rain pours in sheets around her.\nDroplets cling to her umbrella while soft thunder hums across the overcast sky.\nHer schoolbag rests at her feet, damp sneakers tapping nervously against the platform.\nIn the distance, headlights shimmer through the haze as the train approaches, its reflection warping in the rippling puddles below.\n\nInput: A boy finding an old camera in his attic\nAI Story Creator 1\nPrompt:\nDust floats in golden beams of afternoon light as a boy opens an old wooden chest tucked under the attic window.\nHe pulls out a vintage camera wrapped in velvet, its metal gleaming softly in the haze.\nCobwebs sway in the corner as he clicks the shutter, and a faded photograph drifts from inside.\nA breeze stirs through the cracked window, carrying the scent of pine and memory.\n\nInput: A girl dancing alone on a rooftop at sunset\nPrompt:\nOn a quiet rooftop, a girl twirls barefoot across the warm tiles as the sun dips behind city towers.\nHer silhouette cuts against the coral sky, hair flowing in the breeze.\nBirds scatter into the air as she leaps, casting long shadows across the rooftop garden.\nThe soft hum of traffic below fades into a dreamlike rhythm as twilight wraps the scene in soft purple hues.",
+              "role": "system"
+            },
+            {
+              "content": "={{ $json.chatInput }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        -1040,
+        20
+      ],
+      "id": "99cddef2-3c26-4f5c-a37d-175bacd69930",
+      "name": "Prompt Generator",
+      "credentials": {
+        "openAiApi": {
+          "id": "7kCAnxdPhpbBE1Ot",
+          "name": "DeepSeek V3 0324 (free)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "### Generate detailed prompt for Story's Image ",
+        "height": 224,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1140,
+        -60
+      ],
+      "id": "529defa3-0dc7-49c1-9248-b9e1b867f090",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.freepik.com/v1/ai/mystic",
+        "sendQuery": true,
+        "specifyQuery": "json",
+        "jsonQuery": "{\n  \"structure_strength\": 50,\n  \"adherence\": 50,\n  \"hdr\": 50,\n  \"resolution\": \"2k\",\n  \"aspect_ratio\": \"widescreen_16_9\",\n  \"model\": \"realism\",\n  \"creative_detailing\": 100,\n  \"engine\": \"Sparkle\",\n  \"fixed_generation\": false,\n  \"filter_nsfw\": true\n}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "x-freepik-api-key",
+              "value": "FPSX916988b898fa6bcd47ebe0ae9b874bd0"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.message.content }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -640,
+        20
+      ],
+      "id": "4e1c11e3-2246-4b38-81fb-2b417773f078",
+      "name": "HTTP Post Request "
+    },
+    {
+      "parameters": {
+        "url": "=https://api.freepik.com/v1/ai/mystic/{{ $json.data.task_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-freepik-api-key",
+              "value": "FPSX916988b898fa6bcd47ebe0ae9b874bd0"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -280,
+        20
+      ],
+      "id": "1a94e5f1-0915-4f24-93fe-fbaab1c3d710",
+      "name": "HTTP Get Request "
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.data.generated }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file",
+              "outputPropertyName": "=image_generated"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        20,
+        20
+      ],
+      "id": "c5270be2-2e2e-4139-97cd-815eac22e95e",
+      "name": "HTTP Get Request 1"
+    },
+    {
+      "parameters": {
+        "content": "# Image Generation using Freepik API\n\n",
+        "height": 384,
+        "width": 1012,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -760,
+        -160
+      ],
+      "id": "d69deafe-7280-49c8-bb06-e88711e70154",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Generate Prompt",
+        "height": 384,
+        "width": 576,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1440,
+        -160
+      ],
+      "id": "29e801f5-039b-46ae-805c-37e63aa10a57",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "### Send the image prompt for generation",
+        "height": 224,
+        "color": 2
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -700,
+        -60
+      ],
+      "id": "459a7d67-7de1-4c36-9b76-854020cdc8c7",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "### Get the URL of the image generated\n",
+        "height": 224,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -340,
+        -60
+      ],
+      "id": "c4d1cdea-0bb3-4512-a50e-d95d2c01123b",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "### Convert the URL to file as response to download the image generated.\n",
+        "height": 256,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -40,
+        -80
+      ],
+      "id": "376548c2-393a-4ed2-84a6-3cfefa43875c",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -440,
+        20
+      ],
+      "id": "f84fc76a-141b-418a-8c18-45691de5d7e0",
+      "name": "Wait",
+      "webhookId": "13a2e3fb-7a99-4093-9b30-a6d38dcc12ae"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "/Users/arafathjazeeb/Downloads/Story Creator/generated_scene.jpg",
+        "dataPropertyName": "image_generated",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        340,
+        20
+      ],
+      "id": "6b4e274f-6282-453e-a11f-33d706ae7333",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "content": "### NEW: Generate Video from Image",
+        "height": 224,
+        "color": 8
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        -80
+      ],
+      "id": "video-generation-note",
+      "name": "Video Generation Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5000/generate_video",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "image_path",
+              "value": "={{ $json.filePath }}"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $('Prompt Generator').item.json.message.content }}"
+            },
+            {
+              "name": "num_frames",
+              "value": "=64"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        20
+      ],
+      "id": "video-generation-node",
+      "name": "Generate Video"
+    },
+    {
+      "parameters": {
+        "content": "### NEW: Generate TTS Audio",
+        "height": 224,
+        "color": 9
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        480,
+        120
+      ],
+      "id": "tts-note",
+      "name": "TTS Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5001/generate_audio",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "text",
+              "value": "={{ $('Prompt Generator').item.json.message.content }}"
+            },
+            {
+              "name": "language",
+              "value": "=en"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        120
+      ],
+      "id": "tts-generation-node",
+      "name": "Generate TTS Audio"
+    },
+    {
+      "parameters": {
+        "content": "### NEW: Merge Video and Audio",
+        "height": 224,
+        "color": 10
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        880,
+        20
+      ],
+      "id": "merge-note",
+      "name": "Merge Note"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://localhost:5002/merge_video_audio",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "video_path",
+              "value": "={{ $('Generate Video').item.json.video_path }}"
+            },
+            {
+              "name": "audio_path",
+              "value": "={{ $('Generate TTS Audio').item.json.audio_path }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1080,
+        20
+      ],
+      "id": "merge-video-audio-node",
+      "name": "Merge Video and Audio"
+    },
+    {
+      "parameters": {
+        "content": "### NEW: Upload to Google Drive",
+        "height": 224,
+        "color": 11
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        20
+      ],
+      "id": "drive-note",
+      "name": "Google Drive Note"
+    },
+    {
+      "parameters": {
+        "operation": "upload",
+        "fileId": "={{ $('Merge Video and Audio').item.json.output_path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 2,
+      "position": [
+        1480,
+        20
+      ],
+      "id": "google-drive-upload",
+      "name": "Upload to Google Drive"
+    }
+  ],
+  "connections": {
+    "Message Trigger": {
+      "main": [
+        [
+          {
+            "node": "Prompt Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt Generator": {
+      "main": [
+        [
+          {
+            "node": "HTTP Post Request ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Post Request ": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Get Request ": {
+      "main": [
+        [
+          {
+            "node": "HTTP Get Request 1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Get Request 1": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "HTTP Get Request ",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Generate Video",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Generate TTS Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Video": {
+      "main": [
+        [
+          {
+            "node": "Merge Video and Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate TTS Audio": {
+      "main": [
+        [
+          {
+            "node": "Merge Video and Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge Video and Audio": {
+      "main": [
+        [
+          {
+            "node": "Upload to Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Google Drive": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9689865112b393c7e5280d86ff875154fda3a55af10d81fcb92beb59bad3358b"
+  }
+} 
